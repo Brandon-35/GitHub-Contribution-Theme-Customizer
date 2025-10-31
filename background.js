@@ -94,17 +94,3 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// Handle keyboard shortcuts (optional)
-// Note: Requires "commands" permission and commands definition in manifest.json
-if (chrome.commands) {
-  chrome.commands.onCommand.addListener((command) => {
-    if (command === 'capture-screenshot') {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]) {
-          captureAndDownload(tabs[0].id);
-        }
-      });
-    }
-  });
-}
-
