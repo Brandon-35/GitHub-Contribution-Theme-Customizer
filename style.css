@@ -1,0 +1,358 @@
+/* GitHub Contribution Theme Customizer - Styles */
+
+/* Animated contribution cells */
+.github-theme-animated {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.github-theme-animated:hover {
+  transform: scale(1.4) !important;
+  filter: brightness(1.2) drop-shadow(0 0 8px currentColor) !important;
+  z-index: 100 !important;
+  stroke: rgba(255, 255, 255, 0.8) !important;
+  stroke-width: 2px !important;
+}
+
+/* Enhanced tooltip */
+.github-theme-tooltip {
+  position: fixed;
+  display: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  z-index: 10000;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+.github-theme-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #764ba2;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 5px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
+}
+
+.tooltip-content {
+  text-align: center;
+}
+
+.tooltip-date {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.tooltip-count {
+  margin-bottom: 2px;
+  opacity: 0.95;
+}
+
+.tooltip-level {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Analytics Overlay */
+.github-theme-overlay {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overlay-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Special days highlighting */
+rect[data-special-label] {
+  animation: specialDayPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes specialDayPulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.8;
+    filter: brightness(1.3);
+  }
+}
+
+/* Smooth transitions for theme changes */
+rect[data-level],
+rect.ContributionCalendar-day {
+  transition: fill 0.5s ease, stroke 0.3s ease, transform 0.3s ease !important;
+}
+
+/* GitHub dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+  .github-theme-overlay {
+    background: linear-gradient(135deg, #1a1f2e 0%, #2d4059 100%);
+  }
+  
+  .stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .stat-label {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .stat-value {
+    background: linear-gradient(135deg, #00ff41 0%, #00d9ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.github-theme-loading {
+  background: linear-gradient(
+    to right,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Legend customization */
+.ContributionCalendar-legend,
+.legend {
+  transition: all 0.3s ease;
+}
+
+/* Contribution graph container */
+.js-calendar-graph,
+.ContributionCalendar {
+  position: relative;
+}
+
+/* Screenshot preparation */
+.github-theme-screenshot-mode {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* Hover effects for contribution rows */
+.js-calendar-graph g:hover rect,
+.ContributionCalendar g:hover rect {
+  opacity: 1 !important;
+}
+
+/* Custom scrollbar for contribution graph */
+.js-calendar-graph-svg::-webkit-scrollbar,
+.ContributionCalendar-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.js-calendar-graph-svg::-webkit-scrollbar-track,
+.ContributionCalendar-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.js-calendar-graph-svg::-webkit-scrollbar-thumb,
+.ContributionCalendar-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+}
+
+.js-calendar-graph-svg::-webkit-scrollbar-thumb:hover,
+.ContributionCalendar-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Accessibility improvements */
+rect[data-level]:focus,
+rect.ContributionCalendar-day:focus {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .github-theme-tooltip,
+  .github-theme-overlay {
+    display: none !important;
+  }
+  
+  rect[data-level],
+  rect.ContributionCalendar-day {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .overlay-stats {
+    flex-direction: column;
+  }
+  
+  .stat-item {
+    width: 100%;
+  }
+}
+
+/* Highlight most active day */
+rect[data-level="4"],
+rect.ContributionCalendar-day[data-level="4"] {
+  filter: brightness(1.1);
+}
+
+/* Week highlight on hover */
+.js-calendar-graph g:hover,
+.ContributionCalendar g:hover {
+  opacity: 1;
+}
+
+.js-calendar-graph g:not(:hover) rect,
+.ContributionCalendar g:not(:hover) rect {
+  transition: opacity 0.3s ease;
+}
+
+/* Custom color indicator */
+rect[data-custom-color] {
+  position: relative;
+}
+
+/* Gradient overlay for special effects */
+.github-theme-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%
+  );
+  border-radius: 8px;
+}
+
+/* Animation for theme application */
+@keyframes themeApply {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.github-theme-applying {
+  animation: themeApply 0.5s ease-out;
+}
+
+/* Contribution cell border effects */
+rect[data-level].github-theme-bordered {
+  stroke: rgba(0, 0, 0, 0.1);
+  stroke-width: 1px;
+}
+
+/* Enhanced month labels */
+.ContributionCalendar-label,
+.month {
+  font-weight: 600;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.ContributionCalendar-label:hover,
+.month:hover {
+  opacity: 1;
+}
+

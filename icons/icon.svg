@@ -1,0 +1,57 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="128" height="128" rx="24" fill="url(#grad1)"/>
+  
+  <!-- Grid pattern (representing contribution graph) -->
+  <g opacity="0.9">
+    <!-- Row 1 -->
+    <rect x="20" y="30" width="10" height="10" rx="2" fill="#ebedf0"/>
+    <rect x="34" y="30" width="10" height="10" rx="2" fill="#9be9a8"/>
+    <rect x="48" y="30" width="10" height="10" rx="2" fill="#40c463"/>
+    <rect x="62" y="30" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="76" y="30" width="10" height="10" rx="2" fill="#216e39"/>
+    <rect x="90" y="30" width="10" height="10" rx="2" fill="#40c463"/>
+    
+    <!-- Row 2 -->
+    <rect x="20" y="44" width="10" height="10" rx="2" fill="#40c463"/>
+    <rect x="34" y="44" width="10" height="10" rx="2" fill="#216e39"/>
+    <rect x="48" y="44" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="62" y="44" width="10" height="10" rx="2" fill="#9be9a8"/>
+    <rect x="76" y="44" width="10" height="10" rx="2" fill="#ebedf0"/>
+    <rect x="90" y="44" width="10" height="10" rx="2" fill="#216e39"/>
+    
+    <!-- Row 3 -->
+    <rect x="20" y="58" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="34" y="58" width="10" height="10" rx="2" fill="#40c463"/>
+    <rect x="48" y="58" width="10" height="10" rx="2" fill="#216e39"/>
+    <rect x="62" y="58" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="76" y="58" width="10" height="10" rx="2" fill="#9be9a8"/>
+    <rect x="90" y="58" width="10" height="10" rx="2" fill="#40c463"/>
+    
+    <!-- Row 4 -->
+    <rect x="20" y="72" width="10" height="10" rx="2" fill="#9be9a8"/>
+    <rect x="34" y="72" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="48" y="72" width="10" height="10" rx="2" fill="#40c463"/>
+    <rect x="62" y="72" width="10" height="10" rx="2" fill="#216e39"/>
+    <rect x="76" y="72" width="10" height="10" rx="2" fill="#30a14e"/>
+    <rect x="90" y="72" width="10" height="10" rx="2" fill="#9be9a8"/>
+  </g>
+  
+  <!-- Palette icon overlay -->
+  <circle cx="94" cy="94" r="20" fill="white" opacity="0.95"/>
+  <path d="M 94 78 C 85.2 78 78 85.2 78 94 C 78 102.8 85.2 110 94 110 C 98 110 101.5 108.3 104 105.5 C 104.8 104.5 105 103.2 104.5 102 C 104 100.8 103 100 101.8 100 L 98 100 C 94 100 91 97 91 93 C 91 89 94 86 98 86 L 101.8 86 C 106.5 86 110 89.5 110 94.2 C 110 103.7 102.7 110 94 110 Z" fill="#667eea"/>
+  
+  <!-- Color dots on palette -->
+  <circle cx="86" cy="90" r="2.5" fill="#ff69b4"/>
+  <circle cx="94" cy="88" r="2.5" fill="#00ff41"/>
+  <circle cx="102" cy="90" r="2.5" fill="#ffd460"/>
+  <circle cx="90" cy="96" r="2.5" fill="#00d9ff"/>
+</svg>
+
