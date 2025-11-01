@@ -16,22 +16,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Capture screenshot and download
 async function captureAndDownload(tabId) {
   try {
+    // Try to prepare the page (ignore if content script not ready)
+    try {
+      await chrome.tabs.sendMessage(tabId, {
+        action: 'prepareScreenshot'
+      });
+      // Wait a bit for preparation
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } catch (err) {
+      console.log('Could not prepare screenshot, capturing anyway:', err.message);
+    }
+    
     // Capture the visible tab
     const dataUrl = await chrome.tabs.captureVisibleTab(null, {
-      format: 'png',
-      quality: 100
-    });
-    
-    // Prepare to crop the contribution graph area
-    await chrome.tabs.sendMessage(tabId, {
-      action: 'prepareScreenshot'
-    });
-    
-    // Wait a bit for preparation
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    // Capture again after preparation
-    const finalDataUrl = await chrome.tabs.captureVisibleTab(null, {
       format: 'png',
       quality: 100
     });
@@ -41,7 +38,7 @@ async function captureAndDownload(tabId) {
     const filename = `github-contributions-${timestamp}.png`;
     
     await chrome.downloads.download({
-      url: finalDataUrl,
+      url: dataUrl,
       filename: filename,
       saveAs: true
     });
@@ -84,13 +81,15 @@ chrome.action.onClicked.addListener((tab) => {
 // Listen for tab updates to apply theme on GitHub pages
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url && tab.url.includes('github.com')) {
-    // Send message to content script to apply theme
-    chrome.tabs.sendMessage(tabId, {
-      action: 'reapplyTheme'
-    }).catch(error => {
-      // Content script might not be ready yet, that's okay
-      console.log('Content script not ready yet');
-    });
+    // Wait a bit for content script to be ready
+    setTimeout(() => {
+      chrome.tabs.sendMessage(tabId, {
+        action: 'reapplyTheme'
+      }).catch(error => {
+        // Content script might not be ready yet, that's okay
+        console.log('Content script not ready yet:', error.message);
+      });
+    }, 1000);
   }
 });
 

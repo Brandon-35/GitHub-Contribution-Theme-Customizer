@@ -19,14 +19,33 @@ let currentSettings = {
   // Watch for GitHub's dynamic content changes
   observePageChanges();
   
-  // Listen for messages from popup
+  // Listen for messages from popup and background
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'applyTheme') {
       currentSettings = request.settings;
       applyTheme();
       sendResponse({ success: true });
+      return true;
     }
-    return true;
+    
+    if (request.action === 'prepareScreenshot') {
+      // Prepare the page for screenshot (optional: scroll to contribution graph)
+      const graph = findContributionGraph();
+      if (graph) {
+        graph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      sendResponse({ success: true });
+      return true;
+    }
+    
+    if (request.action === 'reapplyTheme') {
+      applyTheme();
+      sendResponse({ success: true });
+      return true;
+    }
+    
+    // Return false if action not recognized
+    return false;
   });
 })();
 
