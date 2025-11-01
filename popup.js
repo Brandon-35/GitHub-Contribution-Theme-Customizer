@@ -230,15 +230,25 @@ async function captureScreenshot() {
       return;
     }
 
+    showStatus('Capturing screenshot...', 'success');
+    
     // Send message to background script to capture
     chrome.runtime.sendMessage({
       action: 'captureScreenshot',
       tabId: tab.id
     }, (response) => {
+      // Check for errors
+      if (chrome.runtime.lastError) {
+        console.error('Runtime error:', chrome.runtime.lastError);
+        showStatus('Error: ' + chrome.runtime.lastError.message, 'error');
+        return;
+      }
+      
       if (response && response.success) {
         showStatus('Screenshot captured! 📸', 'success');
       } else {
-        showStatus('Error capturing screenshot', 'error');
+        const errorMsg = response?.error || 'Unknown error';
+        showStatus('Error: ' + errorMsg, 'error');
       }
     });
   } catch (error) {

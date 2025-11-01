@@ -3,14 +3,19 @@
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'captureScreenshot') {
-    captureAndDownload(request.tabId)
-      .then(() => sendResponse({ success: true }))
-      .catch(error => {
+    // Handle screenshot capture asynchronously
+    (async () => {
+      try {
+        await captureAndDownload(request.tabId);
+        sendResponse({ success: true });
+      } catch (error) {
         console.error('Screenshot error:', error);
         sendResponse({ success: false, error: error.message });
-      });
-    return true; // Will respond asynchronously
+      }
+    })();
+    return true; // Keep channel open for async response
   }
+  return false; // Close channel if not handling this message
 });
 
 // Capture screenshot and download
