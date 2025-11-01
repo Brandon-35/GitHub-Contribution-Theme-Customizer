@@ -117,15 +117,19 @@ function applyTheme() {
 function findContributionGraph() {
   // GitHub uses different selectors, try multiple approaches
   const selectors = [
-    '.js-calendar-graph',
-    '.ContributionCalendar',
-    '[data-hpc] table',
-    'svg.js-calendar-graph-svg'
+    '.ContributionCalendar-grid', // New GitHub structure (table)
+    '.js-calendar-graph-table',   // Table variant
+    '.js-calendar-graph',          // Old structure
+    '.ContributionCalendar',       // Container
+    'svg.js-calendar-graph-svg'    // SVG variant
   ];
   
   for (const selector of selectors) {
     const element = document.querySelector(selector);
-    if (element) return element;
+    if (element) {
+      console.log('Found contribution graph with selector:', selector);
+      return element;
+    }
   }
   
   return null;
@@ -133,23 +137,34 @@ function findContributionGraph() {
 
 // Apply colors to contribution cells
 function applyColors(graph) {
-  // Find all contribution day rectangles
-  const rects = graph.querySelectorAll('rect[data-level], rect.ContributionCalendar-day');
+  // Find all contribution day elements (both td and rect for compatibility)
+  const cells = graph.querySelectorAll('td.ContributionCalendar-day, rect[data-level], rect.ContributionCalendar-day');
   
-  rects.forEach(rect => {
-    let level = rect.getAttribute('data-level');
+  console.log(`Found ${cells.length} contribution cells`);
+  
+  cells.forEach(cell => {
+    let level = cell.getAttribute('data-level');
     
     // If data-level doesn't exist, try to infer from fill color or data-count
     if (level === null) {
-      const dataCount = parseInt(rect.getAttribute('data-count') || '0');
+      const dataCount = parseInt(cell.getAttribute('data-count') || '0');
       level = calculateLevel(dataCount);
     }
     
     level = parseInt(level) || 0;
     
     if (level >= 0 && level < currentSettings.colors.length) {
-      rect.style.fill = currentSettings.colors[level];
-      rect.setAttribute('data-custom-color', currentSettings.colors[level]);
+      const color = currentSettings.colors[level];
+      
+      // Check if it's a td or rect element and apply color accordingly
+      if (cell.tagName.toLowerCase() === 'td') {
+        cell.style.backgroundColor = color;
+        cell.style.setProperty('background-color', color, 'important');
+      } else {
+        cell.style.fill = color;
+      }
+      
+      cell.setAttribute('data-custom-color', color);
     }
   });
   
@@ -168,48 +183,67 @@ function calculateLevel(count) {
 
 // Update legend colors
 function updateLegend(graph) {
-  const legendItems = graph.querySelectorAll('.ContributionCalendar-legend li, .legend li');
+  // Find legend in the parent container
+  const container = graph.closest('.border.py-2') || graph.parentElement;
+  const legendCells = container.querySelectorAll('[id^="contribution-graph-legend-level-"]');
   
-  legendItems.forEach((item, index) => {
-    const rect = item.querySelector('rect, div[style*="background"]');
-    if (rect && index < currentSettings.colors.length) {
-      if (rect.tagName === 'rect') {
-        rect.style.fill = currentSettings.colors[index];
-      } else {
-        rect.style.backgroundColor = currentSettings.colors[index];
+  if (legendCells.length > 0) {
+    legendCells.forEach((cell, index) => {
+      if (index < currentSettings.colors.length) {
+        const color = currentSettings.colors[index];
+        if (cell.tagName.toLowerCase() === 'div') {
+          cell.style.backgroundColor = color;
+          cell.style.setProperty('background-color', color, 'important');
+        } else if (cell.tagName.toLowerCase() === 'rect') {
+          cell.style.fill = color;
+        }
       }
-    }
-  });
+    });
+  } else {
+    // Fallback to old legend structure
+    const legendItems = container.querySelectorAll('.ContributionCalendar-legend li, .legend li');
+    legendItems.forEach((item, index) => {
+      const elem = item.querySelector('rect, div, [style*="background"]');
+      if (elem && index < currentSettings.colors.length) {
+        if (elem.tagName.toLowerCase() === 'rect') {
+          elem.style.fill = currentSettings.colors[index];
+        } else {
+          elem.style.backgroundColor = currentSettings.colors[index];
+          elem.style.setProperty('background-color', currentSettings.colors[index], 'important');
+        }
+      }
+    });
+  }
 }
 
 // Enable animations
 function enableAnimations(graph) {
-  const rects = graph.querySelectorAll('rect[data-level], rect.ContributionCalendar-day');
+  const cells = graph.querySelectorAll('td.ContributionCalendar-day, rect[data-level], rect.ContributionCalendar-day');
   
-  rects.forEach(rect => {
-    rect.classList.add('github-theme-animated');
+  cells.forEach(cell => {
+    cell.classList.add('github-theme-animated');
   });
 }
 
 // Disable animations
 function disableAnimations(graph) {
-  const rects = graph.querySelectorAll('rect[data-level], rect.ContributionCalendar-day');
+  const cells = graph.querySelectorAll('td.ContributionCalendar-day, rect[data-level], rect.ContributionCalendar-day');
   
-  rects.forEach(rect => {
-    rect.classList.remove('github-theme-animated');
+  cells.forEach(cell => {
+    cell.classList.remove('github-theme-animated');
   });
 }
 
 // Enable analytics overlay
 function enableOverlay(graph) {
-  const rects = graph.querySelectorAll('rect[data-level], rect.ContributionCalendar-day');
+  const cells = graph.querySelectorAll('td.ContributionCalendar-day, rect[data-level], rect.ContributionCalendar-day');
   
-  rects.forEach(rect => {
-    enhanceTooltip(rect);
+  cells.forEach(cell => {
+    enhanceTooltip(cell);
   });
   
   // Calculate and display streak information
-  displayStreakInfo(rects);
+  displayStreakInfo(cells);
 }
 
 // Disable overlay
@@ -221,11 +255,11 @@ function disableOverlay() {
 }
 
 // Enhance tooltip with additional information
-function enhanceTooltip(rect) {
-  rect.addEventListener('mouseenter', (e) => {
-    const date = rect.getAttribute('data-date');
-    const count = rect.getAttribute('data-count') || '0';
-    const level = rect.getAttribute('data-level') || '0';
+function enhanceTooltip(cell) {
+  cell.addEventListener('mouseenter', (e) => {
+    const date = cell.getAttribute('data-date');
+    const count = cell.getAttribute('data-count') || '0';
+    const level = cell.getAttribute('data-level') || '0';
     
     // Create enhanced tooltip
     let tooltip = document.getElementById('github-theme-tooltip');
@@ -245,13 +279,13 @@ function enhanceTooltip(rect) {
     `;
     
     // Position tooltip
-    const rectBounds = rect.getBoundingClientRect();
-    tooltip.style.left = `${rectBounds.left + rectBounds.width / 2}px`;
-    tooltip.style.top = `${rectBounds.top - 10}px`;
+    const cellBounds = cell.getBoundingClientRect();
+    tooltip.style.left = `${cellBounds.left + cellBounds.width / 2}px`;
+    tooltip.style.top = `${cellBounds.top - 10}px`;
     tooltip.style.display = 'block';
   });
   
-  rect.addEventListener('mouseleave', () => {
+  cell.addEventListener('mouseleave', () => {
     const tooltip = document.getElementById('github-theme-tooltip');
     if (tooltip) {
       tooltip.style.display = 'none';
@@ -272,10 +306,10 @@ function formatDate(dateStr) {
 }
 
 // Display streak information
-function displayStreakInfo(rects) {
-  const contributions = Array.from(rects).map(rect => ({
-    date: rect.getAttribute('data-date'),
-    count: parseInt(rect.getAttribute('data-count') || '0')
+function displayStreakInfo(cells) {
+  const contributions = Array.from(cells).map(cell => ({
+    date: cell.getAttribute('data-date'),
+    count: parseInt(cell.getAttribute('data-count') || '0')
   })).filter(c => c.date).sort((a, b) => new Date(a.date) - new Date(b.date));
   
   if (contributions.length === 0) return;
@@ -292,7 +326,7 @@ function displayStreakInfo(rects) {
     overlay.id = 'github-theme-overlay';
     overlay.className = 'github-theme-overlay';
     
-    const graphContainer = document.querySelector('.js-calendar-graph, .ContributionCalendar');
+    const graphContainer = document.querySelector('.border.py-2.graph-before-activity-overview, .js-calendar-graph, .ContributionCalendar');
     if (graphContainer) {
       graphContainer.parentElement.insertBefore(overlay, graphContainer);
     }
@@ -362,12 +396,18 @@ function applySpecialDays(graph) {
   if (!currentSettings.special_days) return;
   
   currentSettings.special_days.forEach(specialDay => {
-    const rect = graph.querySelector(`rect[data-date="${specialDay.date}"]`);
-    if (rect) {
-      rect.style.fill = specialDay.color;
-      rect.style.stroke = '#fff';
-      rect.style.strokeWidth = '2px';
-      rect.setAttribute('data-special-label', specialDay.label);
+    const cell = graph.querySelector(`td[data-date="${specialDay.date}"], rect[data-date="${specialDay.date}"]`);
+    if (cell) {
+      if (cell.tagName.toLowerCase() === 'td') {
+        cell.style.backgroundColor = specialDay.color;
+        cell.style.setProperty('background-color', specialDay.color, 'important');
+        cell.style.border = '2px solid #fff';
+      } else {
+        cell.style.fill = specialDay.color;
+        cell.style.stroke = '#fff';
+        cell.style.strokeWidth = '2px';
+      }
+      cell.setAttribute('data-special-label', specialDay.label);
     }
   });
 }

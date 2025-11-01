@@ -10,6 +10,15 @@
   transform: scale(1.4) !important;
   filter: brightness(1.2) drop-shadow(0 0 8px currentColor) !important;
   z-index: 100 !important;
+}
+
+/* For td elements */
+td.github-theme-animated:hover {
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+/* For rect/SVG elements */
+rect.github-theme-animated:hover {
   stroke: rgba(255, 255, 255, 0.8) !important;
   stroke-width: 2px !important;
 }
@@ -137,7 +146,8 @@
 }
 
 /* Special days highlighting */
-rect[data-special-label] {
+rect[data-special-label],
+td[data-special-label] {
   animation: specialDayPulse 2s ease-in-out infinite !important;
 }
 
@@ -156,6 +166,10 @@ rect[data-special-label] {
 rect[data-level],
 rect.ContributionCalendar-day {
   transition: fill 0.5s ease, stroke 0.3s ease, transform 0.3s ease !important;
+}
+
+td.ContributionCalendar-day {
+  transition: background-color 0.5s ease, border 0.3s ease, transform 0.3s ease !important;
 }
 
 /* GitHub dark mode compatibility */
@@ -253,7 +267,8 @@ rect.ContributionCalendar-day {
 
 /* Accessibility improvements */
 rect[data-level]:focus,
-rect.ContributionCalendar-day:focus {
+rect.ContributionCalendar-day:focus,
+td.ContributionCalendar-day:focus {
   outline: 3px solid #667eea;
   outline-offset: 2px;
 }
@@ -266,7 +281,8 @@ rect.ContributionCalendar-day:focus {
   }
   
   rect[data-level],
-  rect.ContributionCalendar-day {
+  rect.ContributionCalendar-day,
+  td.ContributionCalendar-day {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
