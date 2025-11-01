@@ -29,10 +29,21 @@ let currentSettings = {
     }
     
     if (request.action === 'prepareScreenshot') {
-      // Prepare the page for screenshot (optional: scroll to contribution graph)
-      const graph = findContributionGraph();
-      if (graph) {
-        graph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Prepare the page for screenshot and highlight the contribution area
+      const contributionSection = document.querySelector('.border.py-2.graph-before-activity-overview, .js-calendar-graph');
+      if (contributionSection) {
+        // Scroll to view
+        contributionSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Add a temporary highlight border for better screenshot
+        contributionSection.style.outline = '3px solid #667eea';
+        contributionSection.style.outlineOffset = '4px';
+        
+        // Remove highlight after screenshot
+        setTimeout(() => {
+          contributionSection.style.outline = '';
+          contributionSection.style.outlineOffset = '';
+        }, 1500);
       }
       sendResponse({ success: true });
       return true;
